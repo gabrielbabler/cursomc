@@ -7,9 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-
-import com.gbabler.cursomc.model.CategoryResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,21 +23,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Entity
-public class CategoryDomain implements Serializable{
+public class ProductDomain implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private String name;
+	private Double price;
 	
-	@ManyToMany(mappedBy="category")
-	private List<ProductDomain> products;
-	
-	public CategoryResponse toResponse() {
-		return CategoryResponse.builder()
-				.id(id)
-				.name(name)
-				.build();
-	}
+	@ManyToMany
+	@JoinTable(name="PRODUCT_CATEGORY",
+		joinColumns = @JoinColumn(name = "product_id"),
+		inverseJoinColumns = @JoinColumn(name="category_id"))
+	private List<CategoryDomain> categories;
 }
